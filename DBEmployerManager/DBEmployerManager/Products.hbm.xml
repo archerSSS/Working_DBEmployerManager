@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+				   assembly="DBEmployerManager"
+				   namespace="DBEmployerManager.Models">
+	<class name="Products">
+		<id name="ProductId" column="ProductId">
+			<generator class="identity"></generator>
+		</id>
+		<property name="OrdersId" column="OrdersId"></property>
+		<property name="ProductName" column="ProductName"></property>
+		<property name="Count" column="Count"></property>
+		<property name="Price" column="Price"></property>
+	</class>
+
+</hibernate-mapping>

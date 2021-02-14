@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+				   assembly="DBEmployerManager"
+				   namespace="DBEmployerManager.Models">
+	<class name="Orders">
+		<id name="OrderId" column="OrderId">
+			<generator class="identity"></generator>
+		</id>
+		<property name="Contractor" column="Contractor"></property>
+		<property name="Date" column="Date"></property>
+		<property name="Employers_Id" column="Employers_Id"></property>
+	</class>
+
+</hibernate-mapping>
