@@ -35,6 +35,13 @@
             <RowDefinition Height="0.2*"></RowDefinition>
         </Grid.RowDefinitions>
         <Border Grid.ColumnSpan="5" Background="#119955"></Border>
+
+        <TextBlock Grid.Column="1" Grid.Row="1" 
+                   VerticalAlignment="Bottom" 
+                   HorizontalAlignment="Center"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Text="Employers"></TextBlock>
         <StackPanel Grid.Column="0" Grid.Row="2">
             <TextBlock Text="Surname"></TextBlock>
             <TextBox x:Name="TextSurname" Text="{Binding Path=SelectedEmployer.Surname}" Background="LightGray" ></TextBox>
@@ -83,7 +90,13 @@
                     Command="{Binding Path=CommandUpdateEmployer}"
                     CommandParameter="{Binding ElementName=MainView, Path=EV}"></Button>
         </Grid>
-        
+
+        <TextBlock Grid.Column="4" Grid.Row="1" 
+                   VerticalAlignment="Bottom" 
+                   HorizontalAlignment="Center"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Text="Units"></TextBlock>
         <Grid Grid.Column="4" Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
@@ -118,7 +131,13 @@
                       SelectedItem="{Binding Path=SelectedUnit.Employer, Mode=TwoWay}" 
                       SelectionChanged="ComboHead_SelectionChanged"></ComboBox>
         </StackPanel>
-        
+
+        <TextBlock Grid.Column="1" Grid.Row="3" 
+                   VerticalAlignment="Bottom" 
+                   HorizontalAlignment="Center"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Text="Orders"></TextBlock>
         <StackPanel Grid.Column="0" Grid.Row="4">
             <TextBlock Text="Contractor"></TextBlock>
             <TextBox x:Name="TextOrderContractor" Text="{Binding Path=SelectedOrder.Contractor}"></TextBox>
@@ -152,7 +171,13 @@
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
-        
+
+        <TextBlock Grid.Column="4" Grid.Row="3" 
+                   VerticalAlignment="Bottom" 
+                   HorizontalAlignment="Center"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Text="Products"></TextBlock>
         <StackPanel Grid.Row="4" Grid.Column="3">
             <TextBlock Text="Product Name"></TextBlock>
             <TextBox x:Name="TextProductName" 
