@@ -35,6 +35,19 @@ namespace DBEmployerManager
             PV = new ProductView();
         }
 
+
+        string CS
+        {
+            get { return (string)GetValue(CSProperty); }
+            set { SetValue(CSProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CS.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CSProperty =
+            DependencyProperty.Register("CS", typeof(string), typeof(MainWindow), new PropertyMetadata());
+
+
+
         EmployerView EV
         {
             get { return (EmployerView)GetValue(EVProperty); }
@@ -68,8 +81,6 @@ namespace DBEmployerManager
         // Using a DependencyProperty as the backing store for OV.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OVProperty =
             DependencyProperty.Register("OV", typeof(OrderView), typeof(MainWindow), new PropertyMetadata());
-
-
 
 
         ProductView PV
@@ -149,23 +160,14 @@ namespace DBEmployerManager
 
         private void ComboHead_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
         }
 
         private void DataGrid_EmployerSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataEmployers.SelectedItem != null)
-            {
-                ((MainViewModel)DataContext).LoadOrders();
-            }
         }
 
         private void DataGrid_OrderSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataOrders.SelectedItem != null)
-            {
-                ((MainViewModel)DataContext).LoadProducts();
-            }
         }
 
         private void TextProductCount_PreviewTextInput(object sender, TextCompositionEventArgs e)

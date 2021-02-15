@@ -32,6 +32,8 @@ namespace DBEmployerManager.ViewModels
         private ICommand commandUpdateOrder;
         private ICommand commandAddProduct;
         private ICommand commandUpdateProduct;
+        private ICommand commandLoadOrders;
+        private ICommand commandLoadProducts;
 
         public EmployerModel SelectedEmployer { 
             get { return selectedEmployer; } 
@@ -47,6 +49,7 @@ namespace DBEmployerManager.ViewModels
                         EmployerGender = value.EmployerGender,
                         Unit = value.Unit
                     };
+                if (Orders.Count != 0) Orders.Clear();
                 OnPropertyChanged("SelectedEmployer");
             }
         }
@@ -64,6 +67,7 @@ namespace DBEmployerManager.ViewModels
                         Date = value.Date,
                         Employer = value.Employer
                     };
+                if (Products.Count != 0) Products.Clear();
                 OnPropertyChanged("SelectedOrder");
             }
         }
@@ -114,6 +118,8 @@ namespace DBEmployerManager.ViewModels
         public ICommand CommandUpdateOrder { get { return commandUpdateOrder ?? (commandUpdateOrder = new RelayCommand(UpdateOrder, CanExecute)); } }
         public ICommand CommandAddProduct { get { return commandAddProduct ?? (commandAddProduct = new RelayCommand(AddProduct, CanExecute)); } }
         public ICommand CommandUpdateProduct { get { return commandUpdateProduct ?? (commandUpdateProduct = new RelayCommand(UpdateProduct, CanExecute)); } }
+        public ICommand CommandLoadOrders { get { return commandLoadOrders ?? (commandLoadOrders = new RelayCommand(LoadOrders, CanExecute)); } }
+        public ICommand CommandLoadProducts { get { return commandLoadProducts ?? (commandLoadProducts = new RelayCommand(LoadProducts, CanExecute)); } }
 
         public MainViewModel()
         {
@@ -127,6 +133,20 @@ namespace DBEmployerManager.ViewModels
             SelectedProduct = new ProductModel();
 
             connector = new DBConnector();
+            SetData();
+        }
+
+
+        private void SetData()
+        {
+            SetEmployersData();
+            SetUnitsDataReferences();
+            SetEmployersReferences();
+        }
+
+        private void SetEmployersData()
+        {
+            Employers.Clear();
 
             // Recover employers data from database
             //
@@ -145,6 +165,41 @@ namespace DBEmployerManager.ViewModels
                 };
                 Employers.Add(em);
             }
+        }
+
+        private void SetEmployersReferences()
+        {
+            foreach (EmployerModel em in Employers)
+            {
+                if (em.Unit.Name != "") em.Unit = Units.Single(u => u.Name == em.Unit.Name);
+            }
+        }
+
+        private void SetEmployersDataReferences()
+        {
+            // Recover employers data from database
+            //
+            List<Employers> ems = connector.GetEmployers();
+            foreach (Employers e in ems)
+            {
+                EmployerModel em = new EmployerModel()
+                {
+                    Id = e.Id,
+                    Surname = e.LastName,
+                    Name = e.FirstName,
+                    Patronymic = e.Patronymic,
+                    Born = DateTime.Parse(e.Born),
+                    EmployerGender = (Gender)Enum.Parse(typeof(Gender), e.Gender),
+                    Unit = e.UnitName != "" ? Units.Single(u => e.UnitName == u.Name) : null
+                };
+                Employers.Add(em);
+            }
+        }
+
+
+        private void SetUnitsDataReferences()
+        {
+            Units.Clear();
 
             // Recover units data from database and Refer Unit's Employer to Employer
             //
@@ -167,21 +222,8 @@ namespace DBEmployerManager.ViewModels
                 }
                 Units.Add(um);
             }
-
-            // Refer Employer's Unit to Unit
-            //
-            foreach (EmployerModel em in Employers)
-            {
-                em.Unit = em.Unit.Name != "" ? Units.Single(u => em.Unit.Name == u.Name) : null;
-            }
         }
 
-        public void SetDBConnection()
-        {
-            DriverConnectionProvider DCP = new DriverConnectionProvider();
-            DCP.GetConnectionString();
-
-        }
 
         public void AddEmployer(object parameter)
         {
@@ -214,7 +256,16 @@ namespace DBEmployerManager.ViewModels
                 uem.Born = EV.Born;
                 uem.EmployerGender = (Gender)Enum.Parse(typeof(Gender), EV.Gender);
                 uem.Unit = EV.Unit != null ? (UnitModel)EV.Unit : null;
+
                 connector.UpdateEmployer(uem);
+                foreach (UnitModel um in Units)
+                {
+                    if (uem.Unit == um)
+                    {
+                        connector.UpdateUnit(um);
+                    }
+                }
+                SetData();
             }
         }
 
@@ -242,7 +293,19 @@ namespace DBEmployerManager.ViewModels
                 UnitModel um = Units.Single(u => u.Id == SelectedUnit.Id);
                 um.Name = UV.Name;
                 um.Employer = (EmployerModel)UV.Employer;
+
+                SelectedUnit = um;
                 connector.UpdateUnit(um);
+
+                foreach (EmployerModel em in Employers)
+                {
+                    if (em.Unit == um)
+                    {
+                        em.Unit = um;
+                        connector.UpdateEmployer(em);
+                    }
+                }
+                SetData();
             }
         }
 
@@ -306,10 +369,10 @@ namespace DBEmployerManager.ViewModels
             }
         }
 
-        public void LoadOrders()
+        public void LoadOrders(object parameter)
         {
-            Orders.Clear();
             Products.Clear();
+            Orders.Clear();
             if (SelectedEmployer != null)
             {
                 List<Orders> ors = connector.GetOrdersByEntity(SelectedEmployer);
@@ -327,7 +390,7 @@ namespace DBEmployerManager.ViewModels
             }
         }
 
-        public void LoadProducts()
+        public void LoadProducts(object parameter)
         {
             Products.Clear();
             if (SelectedOrder != null)

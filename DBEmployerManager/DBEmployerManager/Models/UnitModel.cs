@@ -12,7 +12,7 @@ namespace DBEmployerManager.Models
         private int id;
         private string name;
         private EmployerModel employer;
-        public int Id { get { return id; } set { id = value; } }
+        public int Id { get { return id; } set { id = value; OnPropertyChanged("Id"); } }
         public string Name { get { return name; } set { name = value; OnPropertyChanged("Name"); } }
         public EmployerModel Employer { get { return employer; } set { employer = value; OnPropertyChanged("Employer"); } }
 

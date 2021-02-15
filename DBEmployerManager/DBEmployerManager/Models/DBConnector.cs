@@ -18,9 +18,9 @@ namespace DBEmployerManager.Models
         {
             conf = new Configuration();
             conf.Configure();
-            //string s = conf.GetProperty("connection.connection_string");
             sessionFact = conf.BuildSessionFactory();
         }
+
 
         public List<Employers> GetEmployers()
         {
